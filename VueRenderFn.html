@@ -1,0 +1,41 @@
+<script src="http://unpkg.com/vue"></script>
+<style>
+    .active {
+        color: green;
+    }
+</style>
+
+<div id="app">
+  <render-fn :tags="['div', 'span', 'p']"></render-fn>
+</div>
+
+<!-- Expected output:
+
+<div id="app">
+  <div>
+    <div>0</div>
+    <span>1</span>
+    <p>2</p>
+  </div>
+</div>
+
+-->
+
+<script>
+Vue.component('render-fn', {
+  props: {
+    tags: Array
+  },
+  render (h) {
+    // implement this
+    
+    return h('div', this.tags.map((tag, index) => {
+        return h(tag, index)
+    }))
+  }
+})
+
+new Vue({
+  el: '#app'
+})
+</script>

@@ -1,0 +1,124 @@
+
+    <div id="app">
+        <p v-color="color">Text</p>
+
+        <input type="number" v-model="value" />
+
+        <ul v-if="warnings">
+            <li v-for="warning in warnings">
+                {{warning}}
+            </li>
+        </ul>
+    </div>
+
+    <script src="http://unpkg.com/vue"></script>
+    <style>
+        .active {
+            color: green;
+        }
+    </style>
+    <script>
+        console.log(Vue.version);
+
+        Vue.config.productionTip = false;
+
+        Vue.directive('color', {
+            bind(el, binding, vnode) {
+                console.log(binding.value)
+                console.log(vnode.context)
+                el.style.color = binding.value
+            },
+            update(el, binding, vnode) { /* called when binding is updated */
+                console.log(binding.value)
+                if (binding.oldValue !== binding.value) {
+                    el.style.color = binding.value
+                }
+            }
+        })
+
+        const mixin = {
+            created() {
+                console.log('Hook triggered from mixin')
+            }
+        }
+
+        const MyComponent = {
+            mixins: [mixin],
+            created() {
+                console.log('Hook triggered from component')
+            }
+        }
+
+        const Plugin = {
+            install(Vue) {
+                Vue.component('foo-bar', {})
+                Vue.directive('my-component', {})
+
+                //Vue.prototype.$http = axios
+
+                Vue.mixin(mixin)
+
+                Vue.mixin({
+                    data() {
+                        return {
+                            //warnings: []
+                        }
+                    },
+                    created() {
+                        if (this.$options.foo) {
+                            console.log('foo!')
+                        }
+                        if (this.$options.router) {
+                            // Initialize router
+                        }
+                        if (this.$options.store) {
+                            // Initialize store
+                        }
+                    },
+                    computed: {
+                        warnings() {
+                            const validations = this.$options.validate
+                            //console.log(validations)
+                            if (validations) {
+                                Object.keys(validations).forEach(key => {
+                                    const value = this[key]
+                                    const {assert, message} = validations[key]
+                                    const result = assert(value)
+                                    if (!result) {
+                                        this.warnings.push(message(key, value))
+                                    }
+                                    /*this.$watch(key, value => {
+                                        const result = assert(value)
+                                        if (!result) {
+                                            this.warnings.push(message(key, value))
+                                        }
+                                    })*/
+                                });
+                            }
+                        }
+                    }
+                })
+            }
+        }
+
+        Vue.use(Plugin)
+
+        const vm = new Vue({
+            el: "#app",
+            data: {
+                color: 'red',
+                foo: true,
+                value: 0
+            },
+            validate: {
+                value: {
+                    assert: newValue => newValue > 1,
+                    message: (key, value) => `${key} must be greater than one. Got ${value}`
+                },
+                //otherValue: newValue => newValue < 10,
+            },
+            methods: {
+            }
+        })
+
+    </script>

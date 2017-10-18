@@ -1,0 +1,49 @@
+
+    <div id="app">
+        <p v-color="color">Text</p>
+    </div>
+
+    <script src="http://unpkg.com/vue"></script>
+    <style>
+        .active {
+            color: green;
+        }
+    </style>
+    <script>
+        console.log(Vue.version);
+
+        Vue.config.productionTip = false;
+
+        Vue.directive('color', {
+            bind(el, binding, vnode) {
+                console.log(binding.value)
+                console.log(vnode.context)
+                el.style.color = binding.value
+            },
+            update(el, binding, vnode) { /* called when binding is updated */
+                console.log(binding.value)
+                if (binding.oldValue !== binding.value) {
+                    el.style.color = binding.value
+                }
+            },
+            /*unbind() {
+
+            },
+            componentUpdated() {
+
+            },
+            inserted() {
+
+            },*/
+        })
+
+        const vm = new Vue({
+            el: "#app",
+            data: {
+                color: 'red'
+            },
+            methods: {
+            }
+        })
+
+    </script>
