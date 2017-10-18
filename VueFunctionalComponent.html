@@ -1,0 +1,48 @@
+
+    <div id="app">
+        <foo id="hello" data-whatever="hi">
+            this is some content
+            <div slot="header">I'm the header</div>
+        </foo>
+    </div>
+
+    <script src="http://unpkg.com/vue"></script>
+    <style>
+    </style>
+    <script>
+        console.log(Vue.version);
+
+        Vue.config.productionTip = false;
+
+        Vue.component('foo', {
+            functional: true,
+            props: ['id'],
+            render (h, context) {
+                context.props       // id: xxx
+                context.data        // Vnode.Data
+                context.children    // Array<VNode>
+                context.parent
+                context.listeners   // { click: () => {} }
+                const slots = context.slots()
+                console.log(context.data)
+                console.log(context.parent)
+                return h('div', context.props.id, context.children, slots.header)
+                
+                // Example with listeners 
+                /*return h('div', {
+                    on: {
+                        keyup: context.listeners.click
+                    }
+                }, context.children)*/
+            }
+        })
+
+        const vm = new Vue({
+            el: "#app",
+            data: {
+            },
+            methods: {
+            }
+        })
+
+    </script>
